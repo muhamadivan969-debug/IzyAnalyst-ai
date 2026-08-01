@@ -20,6 +20,14 @@
   .logo h1{ font-size:17px; }
   .logo small{ display:block; font-size:10px; color:#8FA3C8; font-weight:normal; }
 
+  .status-live{
+    display:inline-flex; align-items:center; gap:6px;
+    background:rgba(22,199,132,.15); color:#16C784;
+    padding:6px 12px; border-radius:20px; font-size:12px; font-weight:bold;
+  }
+  .dot{ width:8px; height:8px; border-radius:50%; background:#16C784; animation:kedip 1.5s infinite; }
+  @keyframes kedip{ 0%,100%{opacity:1;} 50%{opacity:.3;} }
+
   .pilih{ display:flex; gap:8px; margin-bottom:12px; }
   select{
     flex:1; background:#16244F; color:#fff; border:1px solid #26356B;
@@ -37,7 +45,7 @@
   .card{ background:#111E44; border:1px solid #26356B; border-radius:14px; padding:14px; margin-bottom:12px; }
   .card h3{ font-size:12px; color:#8FA3C8; text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }
 
-  .atas{ display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+  .atas{ display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px; flex-wrap:wrap; gap:8px; }
   .harga-besar{ font-size:28px; font-weight:bold; }
   .ticker{ color:#8FA3C8; font-size:13px; margin-bottom:12px; }
   .signal{ padding:7px 15px; border-radius:20px; font-weight:bold; font-size:13px; }
@@ -45,9 +53,10 @@
   .sig-sell{ background:rgba(234,57,67,.2); color:#EA3943; }
   .sig-hold{ background:rgba(143,163,200,.2); color:#8FA3C8; }
 
-  .toolbar{ display:flex; gap:6px; margin-bottom:10px; }
+  .toolbar{ display:flex; gap:6px; margin-bottom:10px; align-items:center; }
   .tf-btn{ background:#16244F; color:#8FA3C8; border:1px solid #26356B; padding:7px 14px; border-radius:8px; font-size:13px; cursor:pointer; }
   .tf-btn.aktif{ background:#1E5AF8; color:#fff; border-color:#1E5AF8; }
+  .muat-label{ margin-left:auto; font-size:11px; color:#16C784; }
 
   .chart-box{ width:100%; height:340px; background:#0d1830; border-radius:10px; position:relative; overflow:hidden; }
   canvas{ position:absolute; top:0; left:0; width:100%; height:100%; }
@@ -57,6 +66,7 @@
   .up{ color:#16C784; } .down{ color:#EA3943; }
 
   .catatan{ font-size:11px; color:#8FA3C8; text-align:center; margin-top:14px; }
+  .sumber{ font-size:10px; color:#5a6a8f; text-align:center; }
 </style>
 </head>
 <body>
@@ -69,49 +79,52 @@
       <small>AI-Powered · Saham Indonesia (IDX)</small>
     </div>
   </div>
-  <button class="signal sig-hold" style="margin:0">💡 DEMO</button>
+  <span class="status-live"><span class="dot"></span>LIVE</span>
 </div>
 
-<input class="input-nama" id="inputNama" placeholder="Ketik kode saham lain, mis. ANTM / MDKA / CPIN">
+<input class="input-nama" id="inputNama" placeholder="Ketik kode saham, mis. ANTM / MDKA / CPIN">
 <div class="pilih">
   <select id="saham">
-    <option value="BBCA">BBCA - Bank Central Asia</option>
-    <option value="BBRI">BBRI - Bank Rakyat Indonesia</option>
-    <option value="TLKM">TLKM - Telkom Indonesia</option>
-    <option value="ASII">ASII - Astra International</option>
-    <option value="GOTO">GOTO - GoTo Gojek Tokopedia</option>
-    <option value="BMRI">BMRI - Bank Mandiri</option>
-    <option value="BBNI">BBNI - Bank Negara Indonesia</option>
-    <option value="UNVR">UNVR - Unilever Indonesia</option>
-    <option value="ICBP">ICBP - Indofood CBP</option>
-    <option value="ANTM">ANTM - Aneka Tambang</option>
-    <option value="MDKA">MDKA - Merdeka Copper Gold</option>
-    <option value="CPIN">CPIN - Charoen Pokphand</option>
-    <option value="INDF">INDF - Indofood Sukses</option>
-    <option value="KLBF">KLBF - Kalbe Farma</option>
-    <option value="SMGR">SMGR - Semen Indonesia</option>
-    <option value="PTBA">PTBA - Bukit Asam</option>
-    <option value="ADRO">ADRO - Adaro Energy</option>
-    <option value="TINS">TINS - Timah</option>
-    <option value="AALI">AALI - Astra Agro Lestari</option>
-    <option value="INCO">INCO - Vale Indonesia</option>
+    <option value="^JKSE">IHSG - Indeks Harga Gabungan</option>
+    <option value="BBCA.JK">BBCA - Bank Central Asia</option>
+    <option value="BBRI.JK">BBRI - Bank Rakyat Indonesia</option>
+    <option value="TLKM.JK">TLKM - Telkom Indonesia</option>
+    <option value="ASII.JK">ASII - Astra International</option>
+    <option value="GOTO.JK">GOTO - GoTo Gojek Tokopedia</option>
+    <option value="BMRI.JK">BMRI - Bank Mandiri</option>
+    <option value="BBNI.JK">BBNI - Bank Negara Indonesia</option>
+    <option value="UNVR.JK">UNVR - Unilever Indonesia</option>
+    <option value="ICBP.JK">ICBP - Indofood CBP</option>
+    <option value="ANTM.JK">ANTM - Aneka Tambang</option>
+    <option value="MDKA.JK">MDKA - Merdeka Copper Gold</option>
+    <option value="CPIN.JK">CPIN - Charoen Pokphand</option>
+    <option value="INDF.JK">INDF - Indofood Sukses</option>
+    <option value="KLBF.JK">KLBF - Kalbe Farma</option>
+    <option value="SMGR.JK">SMGR - Semen Indonesia</option>
+    <option value="PTBA.JK">PTBA - Bukit Asam</option>
+    <option value="ADRO.JK">ADRO - Adaro Energy</option>
+    <option value="TINS.JK">TINS - Timah</option>
+    <option value="AALI.JK">AALI - Astra Agro Lestari</option>
+    <option value="INCO.JK">INCO - Vale Indonesia</option>
   </select>
   <button class="cari" onclick="cariSaham()">Cek ➜</button>
 </div>
 
 <div class="card">
   <div class="atas">
-    <span class="harga-besar" id="harga">--</span>
+    <span class="harga-besar" id="harga">Memuat...</span>
     <span class="signal sig-hold" id="sinyal">ANALISIS...</span>
   </div>
-  <div class="ticker" id="ticker">Pilih saham untuk melihat analisa</div>
+  <div class="ticker" id="ticker">Menghubungkan ke data pasar...</div>
+  <div class="row"><span>Perubahan</span><span id="perubahan">--</span></div>
 </div>
 
 <div class="card">
   <div class="toolbar">
-    <button class="tf-btn" data-n="15" onclick="setTF(15,this)">1B</button>
-    <button class="tf-btn" data-n="90" onclick="setTF(90,this)">6B</button>
-    <button class="tf-btn aktif" data-n="180" onclick="setTF(180,this)">1T</button>
+    <button class="tf-btn" data-k="15" onclick="setTF(this)">1B</button>
+    <button class="tf-btn" data-k="90" onclick="setTF(this)">6B</button>
+    <button class="tf-btn aktif" data-k="180" onclick="setTF(this)">1T</button>
+    <span class="muat-label" id="labelMu">⏳ memuat...</span>
   </div>
   <div class="chart-box"><canvas id="chart"></canvas></div>
 </div>
@@ -129,144 +142,178 @@
   <div class="row"><span>Harga Buka</span><span id="buka">--</span></div>
   <div class="row"><span>Tertinggi</span><span id="tinggi">--</span></div>
   <div class="row"><span>Terendah</span><span id="rendah">--</span></div>
-  <div class="row"><span>Perubahan Hari</span><span id="perubahan">--</span></div>
+  <div class="row"><span>Volume</span><span id="vol">--</span></div>
 </div>
 
-<p class="catatan">Data harga pasar Indonesia (estimasi demo) · Sinyal AI bukan jaminan profit. Riset mandiri.</p>
+<p class="catatan">Sumber data: Yahoo Finance (delay 15-20 menit). Sinyal AI dari analisa teknis sederhana, bukan jaminan profit.</p>
+<p class="sumber">IzyChartAnalisis · made on GitHub Pages</p>
 
 <script>
-// ===== DATA HARGA PASAR INDONESIA (estimasi nyata, untuk demo) =====
-var DATA = {
-  BBCA:{h:9875,  nama:"Bank Central Asia",      m:0.12},
-  BBRI:{h:6025,  nama:"Bank Rakyat Indonesia",  m:0.29},
-  TLKM:{h:3950,  nama:"Telkom Indonesia",       m:0.06},
-  ASII:{h:5675,  nama:"Astra International",    m:-0.11},
-  GOTO:{h:710,   nama:"GoTo Gojek Tokopedia",   m:0.21},
-  BMRI:{h:5950,  nama:"Bank Mandiri",           m:0.16},
-  BBNI:{h:4980,  nama:"Bank Negara Indonesia",  m:0.10},
-  UNVR:{h:1940,  nama:"Unilever Indonesia",     m:-0.02},
-  ICBP:{h:10300, nama:"Indofood CBP",           m:0.04},
-  ANTM:{h:1500,  nama:"Aneka Tambang",          m:0.40},
-  MDKA:{h:2500,  nama:"Merdeka Copper Gold",    m:0.25},
-  CPIN:{h:4800,  nama:"Charoen Pokphand",       m:0.08},
-  INDF:{h:6500,  nama:"Indofood Sukses",        m:0.05},
-  KLBF:{h:1500,  nama:"Kalbe Farma",            m:0.03},
-  SMGR:{h:4000,  nama:"Semen Indonesia",        m:-0.15},
-  PTBA:{h:2800,  nama:"Bukit Asam",             m:0.30},
-  ADRO:{h:2500,  nama:"Adaro Energy",           m:0.45},
-  TINS:{h:1000,  nama:"Timah",                  m:0.22},
-  AALI:{h:9000,  nama:"Astra Agro Lestari",     m:0.06},
-  INCO:{h:4000,  nama:"Vale Indonesia",         m:0.18}
+// ===== DATA BANTUAN (fallback kalau Yahoo gagal) =====
+var FALL = {
+  "^JKSE":{h:7200, nama:"IHSG"}, "BBCA.JK":{h:9875, nama:"Bank Central Asia"},
+  "BBRI.JK":{h:6025, nama:"Bank Rakyat Indonesia"}, "TLKM.JK":{h:3950, nama:"Telkom Indonesia"},
+  "ASII.JK":{h:5675, nama:"Astra International"}, "GOTO.JK":{h:710, nama:"GoTo"},
+  "BMRI.JK":{h:5950, nama:"Bank Mandiri"}, "BBNI.JK":{h:4980, nama:"Bank Negara Indonesia"},
+  "UNVR.JK":{h:1940, nama:"Unilever"}, "ICBP.JK":{h:10300, nama:"Indofood CBP"},
+  "ANTM.JK":{h:1500, nama:"Aneka Tambang"}, "MDKA.JK":{h:2500, nama:"Merdeka Copper Gold"},
+  "CPIN.JK":{h:4800, nama:"Charoen Pokphand"}, "INDF.JK":{h:6500, nama:"Indofood"},
+  "KLBF.JK":{h:1500, nama:"Kalbe Farma"}, "SMGR.JK":{h:4000, nama:"Semen Indonesia"},
+  "PTBA.JK":{h:2800, nama:"Bukit Asam"}, "ADRO.JK":{h:2500, nama:"Adaro"},
+  "TINS.JK":{h:1000, nama:"Timah"}, "AALI.JK":{h:9000, nama:"Astra Agro"},
+  "INCO.JK":{h:4000, nama:"Vale Indonesia"}
 };
 
-var kodeSaatIni = "BBCA";
-var jumlahTitik = 180;
+var jumlahTitik = 180; // jumlah hari di chart
+var kodeSaatIni = "^JKSE";
+var dataTerakhir = null; // hasil baris terakhir dari API
+
 var canvas = document.getElementById("chart");
 var ctx = canvas.getContext("2d");
 
-function gambarChart(kode) {
-  var d = DATA[kode];
+// ===== FUNCTION: MINT0 DATA KE YAHOO VIA PROXY =====
+async function ambilDataYahoo(kode) {
+  // coba beberapa proxy sampai ada yang berhasil
+  var proxyList = [
+    function(u){ return "https://corsproxy.io/?url=" + encodeURIComponent(u); },
+    function(u){ return "https://api.allorigins.win/raw?url=" + encodeURIComponent(u); }
+  ];
+  var url = "https://query1.finance.yahoo.com/v8/finance/chart/" +
+             encodeURIComponent(kode) + "?interval=1d&range=1y";
+  var err = null;
+  for (var i=0;i<proxyList.length;i++){
+    try {
+      var respon = await fetch(proxyList[i](url));
+      if (!respon.ok) continue;
+      var json = await respon.json();
+      var r = json.chart && json.chart.result && json.chart.result[0];
+      if (r && r.timestamp && r.timestamp.length) return r;
+    } catch(e){ err = e; }
+  }
+  throw err || new Error("semua proxy gagal");
+}
+
+// ===== FUNCTION: GAMBAR CHART DARI DATA YAHOO =====
+function gambarChartYahoo(r) {
+  var ts = r.timestamp;
+  var quot = r.indicators.quote[0];
   var w = canvas.width, h = canvas.height;
   ctx.fillStyle = "#0d1830";
   ctx.fillRect(0,0,w,h);
 
-  var n = jumlahTitik;
-  var step = w / n;
-  var harga = d.h * 0.90;
+  // ambil N titik terakhir sesuai timeframe
+  var step = Math.max(1, Math.floor(ts.length / jumlahTitik));
   var candles = [];
-
-  for (var i=0;i<n;i++){
-    // pergerakan wajar harian (0.1% - 1.5%)
-    var persen = (Math.random()-0.5) * d.m * 0.02 + d.m * 0.003;
-    harga = harga * (1 + persen/100);
-    if (i === n-1) harga = d.h; // akhiri di harga saat ini
-
-    var open = harga;
-    var close = open * (1 + (Math.random()-0.5)*0.01);
-    var high = Math.max(open,close) * (1 + Math.random()*0.008);
-    var low  = Math.min(open,close) * (1 - Math.random()*0.008);
-    candles.push({open:open,close:close,high:high,low:low});
+  var n = ts.length;
+  for (var i = n - jumlahTitik; i < n; i++){
+    var idx = Math.max(0, i);
+    var o = quot.open[idx], c = quot.close[idx];
+    var hi = quot.high[idx], lo = quot.low[idx];
+    if (o==null || c==null || lo==null || hi==null) continue;
+    candles.push({open:o, close:c, high:hi, low:lo});
   }
+  if (candles.length < 2) return null;
 
   var minH=Infinity, maxH=-Infinity;
-  candles.forEach(function(c){
-    minH = Math.min(minH, c.low);
-    maxH = Math.max(maxH, c.high);
-  });
+  candles.forEach(function(x){ minH=Math.min(minH,x.low); maxH=Math.max(maxH,x.high); });
   var pad=(maxH-minH)*0.05; minH-=pad; maxH+=pad;
+  var stepX = w/candles.length;
 
-  function y(px){ return h - ((px-minH)/(maxH-minH))*(h-24) - 12; }
+  function Y(px){ return h - ((px-minH)/(maxH-minH))*(h-24) - 12; }
 
-  var bw = Math.max(2, step*0.6);
-  for (var i=0;i<n;i++){
-    var c = candles[i];
-    var x = i*step + step/2;
-    var naik = c.close >= c.open;
-    ctx.strokeStyle = ctx.fillStyle = naik ? "#16C784" : "#EA3943";
-    ctx.beginPath(); ctx.moveTo(x,y(c.high)); ctx.lineTo(x,y(c.low)); ctx.stroke();
-    ctx.fillRect(x-bw/2, Math.min(y(c.open),y(c.close)), bw, Math.max(2,Math.abs(y(c.open)-y(c.close))));
+  var bw=Math.max(2, stepX*0.6);
+  for (var i=0;i<candles.length;i++){
+    var x=i*stepX+stepX/2, c=candles[i];
+    var naik=c.close>=c.open;
+    ctx.strokeStyle=ctx.fillStyle = naik ? "#16C784" : "#EA3943";
+    ctx.beginPath(); ctx.moveTo(x,Y(c.high)); ctx.lineTo(x,Y(c.low)); ctx.stroke();
+    ctx.fillRect(x-bw/2, Math.min(Y(c.open),Y(c.close)), bw, Math.max(2,Math.abs(Y(c.open)-Y(c.close))));
   }
+  // garis MA
+  garisMA(candles,5,"#F4B942",minH,maxH,h,stepX);
+  garisMA(candles,20,"#1E5AF8",minH,maxH,h,stepX);
 
-  garisMA(candles, 5, "#F4B942", minH, maxH, h, step);
-  garisMA(candles, 20, "#1E5AF8", minH, maxH, h, step);
-
-  window._candles = candles;
+  dataTerakhir = candles;
   return candles;
 }
 
-function garisMA(candles, periode, warna, minH, maxH, h, step){
-  ctx.beginPath();
-  ctx.strokeStyle = warna;
-  ctx.lineWidth = 1.5;
-  var mulai = false;
-  for (var i=periode-1;i<candles.length;i++){
-    var sum=0;
-    for (var j=0;j<periode;j++) sum+=candles[i-j].close;
-    var ma = sum/periode;
-    var x = i*step + step/2;
-    var y = h - ((ma-minH)/(maxH-minH))*(h-24) - 12;
-    if (!mulai){ ctx.moveTo(x,y); mulai=true; } else ctx.lineTo(x,y);
+function garisMA(candles,per,warna,minH,maxH,h,stepX){
+  ctx.beginPath(); ctx.strokeStyle=warna; ctx.lineWidth=1.5; var mulai=false;
+  for(var i=per-1;i<candles.length;i++){
+    var s=0; for(var j=0;j<per;j++) s+=candles[i-j].close;
+    var ma=s/per, x=i*stepX+stepX/2, yp=h-((ma-minH)/(maxH-minH))*(h-24)-12;
+    if(!mulai){ctx.moveTo(x,yp);mulai=true;} else ctx.lineTo(x,yp);
   }
   ctx.stroke();
 }
 
-function tampilkan(kode){
-  if (!DATA[kode]){ alert("Saham tidak ditemukan"); return; }
+// ===== FUNCTION: TAMPILKAN SEMUA INFO =====
+async function tampilkan(kode) {
   kodeSaatIni = kode;
-  var d = DATA[kode];
-  var candles = gambarChart(kode);
+  document.getElementById("harga").textContent = "Memuat...";
+  document.getElementById("labelMu").textContent = "⏳ memuat data pasar...";
+  
+  var r = null;
+  try { r = await ambilDataYahoo(kode); }
+  catch(e){ console.log("Yahoo gagal, pakai fallback: "+e); }
 
+  var candles;
+  var harga, buka;
+  var nama = "";
+
+  if (r) { // --- DATA ASLI YAHOO ---
+    candles = gambarChartYahoo(r);
+    var meta = r.meta;
+    if (meta && meta.longName) nama = meta.longName;
+    harga = meta.regularMarketPrice;
+    buka = r.timestamp && r.indicators.quote[0].open[0];
+    document.getElementById("vol").textContent = meta.regularMarketVolume ? 
+      meta.regularMarketVolume.toLocaleString("id-ID") : "--";
+    document.getElementById("labelMu").textContent = "✅ Live data";
+  } else { // --- FALLBACK DATA CONTOH ---
+    var d = FALL[kode] || {h:5000, nama:"Saham"};
+    nama = d.nama;
+    buka = d.h * 0.92;
+    harga = d.h;
+    candles = gambarFallback(d.h);
+    document.getElementById("vol").textContent = "--";
+    document.getElementById("labelMu").textContent = "⚠️ offline/demo";
+    document.getElementById("sinyal").className = "signal sig-hold";
+    document.getElementById("sinyal").textContent = "⏳ DEMO";
+  }
+
+  if (!candles) candles = gambarFallback(harga);
+
+  // --- HITUNG INFO ---
   var tutup = candles[candles.length-1].close;
-  var buka = candles[0].open;
-
   document.getElementById("harga").textContent = "Rp " + Math.round(tutup).toLocaleString("id-ID");
-  document.getElementById("ticker").textContent = kode + " · " + d.nama + " (IDX)";
+  document.getElementById("ticker").textContent = kode.replace(".JK","") + " · " + nama + " (IDX)";
 
   var persen = ((tutup/buka-1)*100).toFixed(2);
-  var up = persen >= 0;
+  var up = persen>=0;
   document.getElementById("perubahan").innerHTML =
     up ? '<span class="up">▲ +'+persen+'%</span>' : '<span class="down">▼ '+persen+'%</span>';
 
-  var ma20 = rata(candles,20), ma50 = rata(candles,50);
+  // AI
+  var ma20=rata(candles,20), ma50=rata(candles,50);
   var trenTeks, trenWarna, skor;
-  if (ma20>ma50){ trenTeks="NAIK (Bullish)"; trenWarna="#16C784"; skor=70; }
-  else { trenTeks="TURUN (Bearish)"; trenWarna="#EA3943"; skor=38; }
-  skor = up ? skor+6 : skor-6;
-  skor += Math.round(d.m*30);
+  if(ma20>ma50){trenTeks="NAIK (Bullish)";trenWarna="#16C784";skor=70;}
+  else{trenTeks="TURUN (Bearish)";trenWarna="#EA3943";skor=38;}
+  skor = up ? skor+8 : skor-8;
   skor = Math.max(15, Math.min(92, Math.round(skor)));
 
   var rek, sig;
-  if (skor>=65){ rek="BUY"; sig="sig-buy"; }
-  else if (skor<=40){ rek="SELL"; sig="sig-sell"; }
-  else { rek="HOLD"; sig="sig-hold"; }
+  if(skor>=65){rek="BUY";sig="sig-buy";}
+  else if(skor<=40){rek="SELL";sig="sig-sell";}
+  else{rek="HOLD";sig="sig-hold";}
 
-  document.getElementById("skor").textContent = skor + "/100";
+  document.getElementById("skor").textContent = skor+"/100";
   document.getElementById("rekom").textContent = rek;
   document.getElementById("tren").innerHTML = '<span style="color:'+trenWarna+'">'+trenTeks+'</span>';
-  document.getElementById("target").textContent = "Rp " + Math.round(tutup*(up?1.05:0.95)).toLocaleString("id-ID");
+  document.getElementById("target").textContent = "Rp "+Math.round(tutup*(up?1.05:0.95)).toLocaleString("id-ID");
 
-  var sinyal = document.getElementById("sinyal");
-  sinyal.className = "signal " + sig;
+  var sinyal=document.getElementById("sinyal");
+  sinyal.className="signal "+sig;
   sinyal.textContent = rek==="BUY"?"🚀 BUY":(rek==="SELL"?"🔻 SELL":"⏳ HOLD");
 
   document.getElementById("buka").textContent = "Rp "+Math.round(buka).toLocaleString("id-ID");
@@ -274,38 +321,70 @@ function tampilkan(kode){
   document.getElementById("rendah").innerHTML = '<span class="down">Rp '+Math.round(buka*0.96).toLocaleString("id-ID")+'</span>';
 }
 
-function rata(candles, per){
-  if (candles.length < per) return candles[candles.length-1].close;
-  var s=0;
-  for (var j=0;j<per;j++) s+=candles[candles.length-1-j].close;
+// --- FALLBACK CHART (kalau offline) ---
+function gambarFallback(hargaDasar){
+  var w=canvas.width, h=canvas.height;
+  ctx.fillStyle="#0d1830"; ctx.fillRect(0,0,w,h);
+  var n=jumlahTitik, step=w/n;
+  var harga=hargaDasar*0.90, candles=[];
+  for(var i=0;i<n;i++){
+    harga = harga*(1 + (Math.random()-0.5)*0.015);
+    if(i===n-1) harga=hargaDasar;
+    var o=harga, c=o*(1+(Math.random()-0.5)*0.01);
+    var hi=Math.max(o,c)*(1+Math.random()*0.008), lo=Math.min(o,c)*(1-Math.random()*0.008);
+    candles.push({open:o,close:c,high:hi,low:lo});
+  }
+  var minH=Infinity,maxH=-Infinity;
+  candles.forEach(function(x){minH=Math.min(minH,x.low);maxH=Math.max(maxH,x.high);});
+  var pad=(maxH-minH)*0.05;minH-=pad;maxH+=pad;
+  function Y(px){return h-((px-minH)/(maxH-minH))*(h-24)-12;}
+  var bw=Math.max(2,step*0.6);
+  for(var i=0;i<n;i++){
+    var x=i*step+step/2, cx=candles[i], naik=cx.close>=cx.open;
+    ctx.strokeStyle=ctx.fillStyle=naik?"#16C784":"#EA3943";
+    ctx.beginPath();ctx.moveTo(x,Y(cx.high));ctx.lineTo(x,Y(cx.low));ctx.stroke();
+    ctx.fillRect(x-bw/2,Math.min(Y(cx.open),Y(cx.close)),bw,Math.max(2,Math.abs(Y(cx.open)-Y(cx.close))));
+  }
+  garisMA(candles,5,"#F4B942",minH,maxH,h,step);
+  garisMA(candles,20,"#1E5AF8",minH,maxH,h,step);
+  return candles;
+}
+
+function rata(candles,per){
+  if(candles.length<per) return candles[candles.length-1].close;
+  var s=0; for(var j=0;j<per;j++) s+=candles[candles.length-1-j].close;
   return s/per;
 }
 
-function setTF(n, btn){
-  jumlahTitik = n;
-  document.querySelectorAll(".tf-btn").forEach(function(b){ b.classList.remove("aktif"); });
+function setTF(btn){
+  jumlahTitik = parseInt(btn.getAttribute("data-k"),10);
+  document.querySelectorAll(".tf-btn").forEach(function(b){b.classList.remove("aktif");});
   btn.classList.add("aktif");
   tampilkan(kodeSaatIni);
 }
 
 function cariSaham(){
-  var k = document.getElementById("inputNama").value.toUpperCase().trim();
-  if (!k) return;
-  if (DATA[k]){ document.getElementById("saham").value = k; tampilkan(k); }
-  else {
-    var hbaru = Math.round(500+Math.random()*20000);
-    DATA[k] = {h:hbaru, nama:"Saham IDX", m:0.2};
-    document.getElementById("saham").value = k;
-    tampilkan(k);
+  var k = document.getElementById("inputNama").value.toUpperCase().trim().replace(/\s/g,"");
+  if(!k) return;
+  // tambahkan .JK jika belum
+  if(k !== "^JKSE" && !k.endsWith(".JK")) k = k + ".JK";
+  // tambahkan opsi baru ke dropdown
+  var ada=false;
+  var sel=document.getElementById("saham");
+  for(var i=0;i<sel.options.length;i++){ if(sel.options[i].value===k) ada=true; }
+  if(!ada){
+    var opt=document.createElement("option");
+    opt.value=k; opt.text = k.replace(".JK","")+" - (Cari)"; sel.appendChild(opt);
   }
+  sel.value=k;
+  tampilkan(k);
 }
 
 document.getElementById("saham").addEventListener("change", function(){ tampilkan(this.value); });
 
 function aturUkuran(){
-  var box = document.querySelector(".chart-box");
-  canvas.width = box.clientWidth;
-  canvas.height = box.clientHeight;
+  var box=document.querySelector(".chart-box");
+  canvas.width=box.clientWidth; canvas.height=box.clientHeight;
   tampilkan(kodeSaatIni);
 }
 window.addEventListener("load", aturUkuran);
