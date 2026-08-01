@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IzyChartAnalisis - Chart Analisa AI Saham Indonesia</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
+    background:#0B1739; color:#E7EEFF; line-height:1.5; padding:14px;
+  }
+  .header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+  .logo{ display:flex; align-items:center; gap:10px; }
+  .logo-icon{
+    width:40px; height:40px; border-radius:10px; font-size:22px;
+    display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(135deg,#1E5AF8,#0DBD8B);
+  }
+  .logo h1{ font-size:17px; }
+  .logo small{ display:block; font-size:10px; color:#8FA3C8; font-weight:normal; }
+
+  .pilih{ display:flex; gap:8px; margin-bottom:12px; }
+  select{
+    flex:1; background:#16244F; color:#fff; border:1px solid #26356B;
+    padding:11px; border-radius:8px; font-size:15px;
+  }
+  .cari{
+    flex:0 0 88px; background:#1E5AF8; color:#fff; border:none;
+    border-radius:8px; font-size:14px; font-weight:bold; cursor:pointer;
+  }
+  .input-nama{
+    width:100%; background:#16244F; color:#fff; border:1px solid #26356B;
+    padding:11px; border-radius:8px; font-size:15px; margin-bottom:12px;
+  }
+
+  .card{ background:#111E44; border:1px solid #26356B; border-radius:14px; padding:14px; margin-bottom:12px; }
+  .card h3{ font-size:12px; color:#8FA3C8; text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }
+
+  .atas{ display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+  .harga-besar{ font-size:28px; font-weight:bold; }
+  .ticker{ color:#8FA3C8; font-size:13px; margin-bottom:12px; }
+  .signal{ padding:7px 15px; border-radius:20px; font-weight:bold; font-size:13px; }
+  .sig-buy{ background:rgba(22,199,132,.2); color:#16C784; }
+  .sig-sell{ background:rgba(234,57,67,.2); color:#EA3943; }
+  .sig-hold{ background:rgba(143,163,200,.2); color:#8FA3C8; }
+
+  .toolbar{ display:flex; gap:6px; margin-bottom:10px; }
+  .tf-btn{ background:#16244F; color:#8FA3C8; border:1px solid #26356B; padding:7px 14px; border-radius:8px; font-size:13px; cursor:pointer; }
+  .tf-btn.aktif{ background:#1E5AF8; color:#fff; border-color:#1E5AF8; }
+
+  .chart-box{ width:100%; height:340px; background:#0d1830; border-radius:10px; position:relative; overflow:hidden; }
+  canvas{ position:absolute; top:0; left:0; width:100%; height:100%; }
+
+  .row{ display:flex; justify-content:space-between; padding:7px 0; border-bottom:1px solid #1E2B58; font-size:14px; }
+  .row:last-child{ border-bottom:none; }
+  .up{ color:#16C784; } .down{ color:#EA3943; }
+
+  .catatan{ font-size:11px; color:#8FA3C8; text-align:center; margin-top:14px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-icon">📈</div>
+    <div>
+      <h1>IzyChartAnalisis</h1>
+      <small>AI-Powered · Saham Indonesia (IDX)</small>
+    </div>
+  </div>
+  <button class="signal sig-hold" style="margin:0">💡 DEMO</button>
+</div>
+
+<input class="input-nama" id="inputNama" placeholder="Ketik kode saham lain, mis. ANTM / MDKA / CPIN">
+<div class="pilih">
+  <select id="saham">
+    <option value="BBCA">BBCA - Bank Central Asia</option>
+    <option value="BBRI">BBRI - Bank Rakyat Indonesia</option>
+    <option value="TLKM">TLKM - Telkom Indonesia</option>
+    <option value="ASII">ASII - Astra International</option>
+    <option value="GOTO">GOTO - GoTo Gojek Tokopedia</option>
+    <option value="BMRI">BMRI - Bank Mandiri</option>
+    <option value="BBNI">BBNI - Bank Negara Indonesia</option>
+    <option value="UNVR">UNVR - Unilever Indonesia</option>
+    <option value="ICBP">ICBP - Indofood CBP</option>
+    <option value="ANTM">ANTM - Aneka Tambang</option>
+    <option value="MDKA">MDKA - Merdeka Copper Gold</option>
+    <option value="CPIN">CPIN - Charoen Pokphand</option>
+    <option value="INDF">INDF - Indofood Sukses</option>
+    <option value="KLBF">KLBF - Kalbe Farma</option>
+    <option value="SMGR">SMGR - Semen Indonesia</option>
+    <option value="PTBA">PTBA - Bukit Asam</option>
+    <option value="ADRO">ADRO - Adaro Energy</option>
+    <option value="TINS">TINS - Timah</option>
+    <option value="AALI">AALI - Astra Agro Lestari</option>
+    <option value="INCO">INCO - Vale Indonesia</option>
+  </select>
+  <button class="cari" onclick="cariSaham()">Cek ➜</button>
+</div>
+
+<div class="card">
+  <div class="atas">
+    <span class="harga-besar" id="harga">--</span>
+    <span class="signal sig-hold" id="sinyal">ANALISIS...</span>
+  </div>
+  <div class="ticker" id="ticker">Pilih saham untuk melihat analisa</div>
+</div>
+
+<div class="card">
+  <div class="toolbar">
+    <button class="tf-btn" data-n="15" onclick="setTF(15,this)">1B</button>
+    <button class="tf-btn" data-n="90" onclick="setTF(90,this)">6B</button>
+    <button class="tf-btn aktif" data-n="180" onclick="setTF(180,this)">1T</button>
+  </div>
+  <div class="chart-box"><canvas id="chart"></canvas></div>
+</div>
+
+<div class="card">
+  <h3>🤖 Prediksi AI</h3>
+  <div class="row"><span>AI Score</span><b id="skor">--</b></div>
+  <div class="row"><span>Rekomendasi</span><b id="rekom">--</b></div>
+  <div class="row"><span>Target 30 Hari</span><b id="target">--</b></div>
+  <div class="row"><span>Tren (MA20 vs MA50)</span><b id="tren">--</b></div>
+</div>
+
+<div class="card">
+  <h3>📋 Detail Saham</h3>
+  <div class="row"><span>Harga Buka</span><span id="buka">--</span></div>
+  <div class="row"><span>Tertinggi</span><span id="tinggi">--</span></div>
+  <div class="row"><span>Terendah</span><span id="rendah">--</span></div>
+  <div class="row"><span>Perubahan Hari</span><span id="perubahan">--</span></div>
+</div>
+
+<p class="catatan">Data harga pasar Indonesia (estimasi demo) · Sinyal AI bukan jaminan profit. Riset mandiri.</p>
+
+<script>
+// ===== DATA HARGA PASAR INDONESIA (estimasi nyata, untuk demo) =====
+var DATA = {
+  BBCA:{h:9875,  nama:"Bank Central Asia",      m:0.12},
+  BBRI:{h:6025,  nama:"Bank Rakyat Indonesia",  m:0.29},
+  TLKM:{h:3950,  nama:"Telkom Indonesia",       m:0.06},
+  ASII:{h:5675,  nama:"Astra International",    m:-0.11},
+  GOTO:{h:710,   nama:"GoTo Gojek Tokopedia",   m:0.21},
+  BMRI:{h:5950,  nama:"Bank Mandiri",           m:0.16},
+  BBNI:{h:4980,  nama:"Bank Negara Indonesia",  m:0.10},
+  UNVR:{h:1940,  nama:"Unilever Indonesia",     m:-0.02},
+  ICBP:{h:10300, nama:"Indofood CBP",           m:0.04},
+  ANTM:{h:1500,  nama:"Aneka Tambang",          m:0.40},
+  MDKA:{h:2500,  nama:"Merdeka Copper Gold",    m:0.25},
+  CPIN:{h:4800,  nama:"Charoen Pokphand",       m:0.08},
+  INDF:{h:6500,  nama:"Indofood Sukses",        m:0.05},
+  KLBF:{h:1500,  nama:"Kalbe Farma",            m:0.03},
+  SMGR:{h:4000,  nama:"Semen Indonesia",        m:-0.15},
+  PTBA:{h:2800,  nama:"Bukit Asam",             m:0.30},
+  ADRO:{h:2500,  nama:"Adaro Energy",           m:0.45},
+  TINS:{h:1000,  nama:"Timah",                  m:0.22},
+  AALI:{h:9000,  nama:"Astra Agro Lestari",     m:0.06},
+  INCO:{h:4000,  nama:"Vale Indonesia",         m:0.18}
+};
+
+var kodeSaatIni = "BBCA";
+var jumlahTitik = 180;
+var canvas = document.getElementById("chart");
+var ctx = canvas.getContext("2d");
+
+function gambarChart(kode) {
+  var d = DATA[kode];
+  var w = canvas.width, h = canvas.height;
+  ctx.fillStyle = "#0d1830";
+  ctx.fillRect(0,0,w,h);
+
+  var n = jumlahTitik;
+  var step = w / n;
+  var harga = d.h * 0.90;
+  var candles = [];
+
+  for (var i=0;i<n;i++){
+    // pergerakan wajar harian (0.1% - 1.5%)
+    var persen = (Math.random()-0.5) * d.m * 0.02 + d.m * 0.003;
+    harga = harga * (1 + persen/100);
+    if (i === n-1) harga = d.h; // akhiri di harga saat ini
+
+    var open = harga;
+    var close = open * (1 + (Math.random()-0.5)*0.01);
+    var high = Math.max(open,close) * (1 + Math.random()*0.008);
+    var low  = Math.min(open,close) * (1 - Math.random()*0.008);
+    candles.push({open:open,close:close,high:high,low:low});
+  }
+
+  var minH=Infinity, maxH=-Infinity;
+  candles.forEach(function(c){
+    minH = Math.min(minH, c.low);
+    maxH = Math.max(maxH, c.high);
+  });
+  var pad=(maxH-minH)*0.05; minH-=pad; maxH+=pad;
+
+  function y(px){ return h - ((px-minH)/(maxH-minH))*(h-24) - 12; }
+
+  var bw = Math.max(2, step*0.6);
+  for (var i=0;i<n;i++){
+    var c = candles[i];
+    var x = i*step + step/2;
+    var naik = c.close >= c.open;
+    ctx.strokeStyle = ctx.fillStyle = naik ? "#16C784" : "#EA3943";
+    ctx.beginPath(); ctx.moveTo(x,y(c.high)); ctx.lineTo(x,y(c.low)); ctx.stroke();
+    ctx.fillRect(x-bw/2, Math.min(y(c.open),y(c.close)), bw, Math.max(2,Math.abs(y(c.open)-y(c.close))));
+  }
+
+  garisMA(candles, 5, "#F4B942", minH, maxH, h, step);
+  garisMA(candles, 20, "#1E5AF8", minH, maxH, h, step);
+
+  window._candles = candles;
+  return candles;
+}
+
+function garisMA(candles, periode, warna, minH, maxH, h, step){
+  ctx.beginPath();
+  ctx.strokeStyle = warna;
+  ctx.lineWidth = 1.5;
+  var mulai = false;
+  for (var i=periode-1;i<candles.length;i++){
+    var sum=0;
+    for (var j=0;j<periode;j++) sum+=candles[i-j].close;
+    var ma = sum/periode;
+    var x = i*step + step/2;
+    var y = h - ((ma-minH)/(maxH-minH))*(h-24) - 12;
+    if (!mulai){ ctx.moveTo(x,y); mulai=true; } else ctx.lineTo(x,y);
+  }
+  ctx.stroke();
+}
+
+function tampilkan(kode){
+  if (!DATA[kode]){ alert("Saham tidak ditemukan"); return; }
+  kodeSaatIni = kode;
+  var d = DATA[kode];
+  var candles = gambarChart(kode);
+
+  var tutup = candles[candles.length-1].close;
+  var buka = candles[0].open;
+
+  document.getElementById("harga").textContent = "Rp " + Math.round(tutup).toLocaleString("id-ID");
+  document.getElementById("ticker").textContent = kode + " · " + d.nama + " (IDX)";
+
+  var persen = ((tutup/buka-1)*100).toFixed(2);
+  var up = persen >= 0;
+  document.getElementById("perubahan").innerHTML =
+    up ? '<span class="up">▲ +'+persen+'%</span>' : '<span class="down">▼ '+persen+'%</span>';
+
+  var ma20 = rata(candles,20), ma50 = rata(candles,50);
+  var trenTeks, trenWarna, skor;
+  if (ma20>ma50){ trenTeks="NAIK (Bullish)"; trenWarna="#16C784"; skor=70; }
+  else { trenTeks="TURUN (Bearish)"; trenWarna="#EA3943"; skor=38; }
+  skor = up ? skor+6 : skor-6;
+  skor += Math.round(d.m*30);
+  skor = Math.max(15, Math.min(92, Math.round(skor)));
+
+  var rek, sig;
+  if (skor>=65){ rek="BUY"; sig="sig-buy"; }
+  else if (skor<=40){ rek="SELL"; sig="sig-sell"; }
+  else { rek="HOLD"; sig="sig-hold"; }
+
+  document.getElementById("skor").textContent = skor + "/100";
+  document.getElementById("rekom").textContent = rek;
+  document.getElementById("tren").innerHTML = '<span style="color:'+trenWarna+'">'+trenTeks+'</span>';
+  document.getElementById("target").textContent = "Rp " + Math.round(tutup*(up?1.05:0.95)).toLocaleString("id-ID");
+
+  var sinyal = document.getElementById("sinyal");
+  sinyal.className = "signal " + sig;
+  sinyal.textContent = rek==="BUY"?"🚀 BUY":(rek==="SELL"?"🔻 SELL":"⏳ HOLD");
+
+  document.getElementById("buka").textContent = "Rp "+Math.round(buka).toLocaleString("id-ID");
+  document.getElementById("tinggi").innerHTML = '<span class="up">Rp '+Math.round(buka*1.03).toLocaleString("id-ID")+'</span>';
+  document.getElementById("rendah").innerHTML = '<span class="down">Rp '+Math.round(buka*0.96).toLocaleString("id-ID")+'</span>';
+}
+
+function rata(candles, per){
+  if (candles.length < per) return candles[candles.length-1].close;
+  var s=0;
+  for (var j=0;j<per;j++) s+=candles[candles.length-1-j].close;
+  return s/per;
+}
+
+function setTF(n, btn){
+  jumlahTitik = n;
+  document.querySelectorAll(".tf-btn").forEach(function(b){ b.classList.remove("aktif"); });
+  btn.classList.add("aktif");
+  tampilkan(kodeSaatIni);
+}
+
+function cariSaham(){
+  var k = document.getElementById("inputNama").value.toUpperCase().trim();
+  if (!k) return;
+  if (DATA[k]){ document.getElementById("saham").value = k; tampilkan(k); }
+  else {
+    var hbaru = Math.round(500+Math.random()*20000);
+    DATA[k] = {h:hbaru, nama:"Saham IDX", m:0.2};
+    document.getElementById("saham").value = k;
+    tampilkan(k);
+  }
+}
+
+document.getElementById("saham").addEventListener("change", function(){ tampilkan(this.value); });
+
+function aturUkuran(){
+  var box = document.querySelector(".chart-box");
+  canvas.width = box.clientWidth;
+  canvas.height = box.clientHeight;
+  tampilkan(kodeSaatIni);
+}
+window.addEventListener("load", aturUkuran);
+window.addEventListener("resize", aturUkuran);
+</script>
+</body>
+</html>
